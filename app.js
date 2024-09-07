@@ -20,9 +20,11 @@ app.use(cookieParser())
 
 //import routes
 import playerRouter from "./src/routes/playerRoute.js"
+import hostelRouter from "./src/routes/hostelRoute.js"
 
 
 app.use('/api/v1/players', playerRouter)
+app.use('/api/v1/hostels', hostelRouter)
 
 
 

@@ -1,16 +1,14 @@
-import jwt from "jsonwebtoken"
-import { Player } from "../models/PlayerSchema.js"
+import { Hostel } from "../models/HostelSchema.js"
 
-
-const registerPLayer = async (req, res) => {
+const registerHostel = async (req, res) => {
     try {
 
         //get user details from frontend
-        const { playerName, sports, status } = req.body
+        const { hostelName, hostelType, address, intake, description, status } = req.body
 
 
         //validation
-        if (!(playerName || sports || status)) {
+        if (!(hostelName || hostelType || address || intake || description || status)) {
             return res.status(400).json({
                 status: "failed",
                 message: "Please provide all fields",
@@ -18,33 +16,36 @@ const registerPLayer = async (req, res) => {
         }
 
         //check if user already exists or not
-        const existedPlayer = await Player.findOne({ playerName })
+        const existedHostel = await Hostel.findOne({ hostelName })
 
-        if (existedPlayer) {
+        if (existedHostel) {
             return res.status(409).json({
                 status: "failed",
-                message: "Player already exists"
+                message: "Hostel already exists"
             })
         } else {
-            const newPlayer = new Player({
-                playerName,
-                sports,
+            const newHostel = new Hostel({
+                hostelName,
+                hostelType,
+                address,
+                intake,
+                description,
                 status
             })
-            await newPlayer.save()
+            await newHostel.save()
 
 
-            if (!newPlayer) {
+            if (!newHostel) {
                 return res.status(500).json({
                     status: 'error',
-                    message: "something went wrong while registering the Player"
+                    message: "something went wrong while registering the Hostel"
                 })
             } else {
                 //return response
                 return res.status(200).json({
                     status: "success",
-                    message: "Player Registered successfully",
-                    newPlayer
+                    message: "Hostel Registered successfully",
+                    newHostel
                 })
             }
         }
@@ -55,46 +56,34 @@ const registerPLayer = async (req, res) => {
 }
 
 
-const loginPlayer = async (req, res) => {
+const loginHostel = async (req, res) => {
     try {
-        const { playerName } = req.body
+        const { hostelName } = req.body
 
         //validation
-        if (!playerName) {
+        if (!hostelName) {
             return res.status(400).json({
                 status: "failed",
-                message: "Please provide player name",
+                message: "Please provide hostel name",
             })
         }
 
         //check existed user
-        const existedPlayer = await Player.findOne({ playerName })
+        const existedHostel = await Hostel.findOne({ hostelName })
 
-        if (!existedPlayer) {
+        if (!existedHostel) {
             return res.status(401).json({
                 status: "failed",
-                message: "Player does not exist"
+                message: "Hostel does not exist"
             })
         } else {
-            //generate token
-            const token = jwt.sign(
-                {
-                    id: existedPlayer._id
-                },
-                process.env.ACCESS_TOKEN_SECRET,
-                {
-                    expiresIn: process.env.ACCESS_TOKEN_EXPIRY
-                }
-            )
-
 
             //return response 
             return res
                 .status(200)
                 .json({
                     status: 'success',
-                    message: "Player Login Successfully",
-                    token
+                    message: "Hostel Login Successfully"
                 })
         }
 
@@ -103,16 +92,16 @@ const loginPlayer = async (req, res) => {
     }
 }
 
-const getPlayerById = async (req, res) => {
+const getHostelById = async (req, res) => {
     try {
         const { id } = req.body
 
-        const player = await Player.findById(id)
+        const hostel = await Hostel.findById(id)
         return res
             .status(200)
             .json({
                 status: "success",
-                data: player
+                data: hostel
             })
 
     } catch (error) {
@@ -120,15 +109,15 @@ const getPlayerById = async (req, res) => {
     }
 }
 
-const getAllPlayers = async (req, res) => {
+const getAllHostel = async (req, res) => {
     try {
-        const player = await Player.findOne()
+        const hostel = await Hostel.findOne()
 
         return res
             .status(200)
             .json({
                 status: "success",
-                data: player
+                data: hostel
             })
 
 
@@ -137,11 +126,11 @@ const getAllPlayers = async (req, res) => {
     }
 }
 
-const updatePlayerProfile = async (req, res) => {
+const updateHostelProfile = async (req, res) => {
     try {
         const { id } = req.params
 
-        const updatedPlayer = await Player.findByIdAndUpdate(
+        const updatedHostel = await Hostel.findByIdAndUpdate(
             id,
             req.body,
             { new: true }
@@ -152,7 +141,7 @@ const updatePlayerProfile = async (req, res) => {
             .status(200)
             .json({
                 status: "success",
-                data: updatedPlayer
+                data: updatedHostel
             })
 
     } catch (error) {
@@ -161,18 +150,18 @@ const updatePlayerProfile = async (req, res) => {
 }
 
 
-const deletePlayer = async (req, res) => {
+const deleteHostel = async (req, res) => {
     try {
 
         const { id } = req.body
 
-        const deletedPlayer = await Player.findByIdAndDelete(id)
+        const deletedHostel = await Hostel.findByIdAndDelete(id)
 
         return res
             .status(200)
             .json({
                 status: "success",
-                deletedPlayer,
+                deletedHostel,
 
             })
 
@@ -189,10 +178,10 @@ const deletePlayer = async (req, res) => {
 
 
 export {
-    registerPLayer,
-    loginPlayer,
-    getPlayerById,
-    getAllPlayers,
-    updatePlayerProfile,
-    deletePlayer
+    registerHostel,
+    loginHostel,
+    getHostelById,
+    getAllHostel,
+    updateHostelProfile,
+    deleteHostel
 }

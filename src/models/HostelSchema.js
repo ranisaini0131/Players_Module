@@ -3,10 +3,10 @@ import { Schema } from "mongoose";
 
 //naming convention
 
-const playerSchema = new Schema(
+const hostelSchema = new Schema(
 
     {
-        playerId: {
+        hostelId: {
             type: String,
             unique: true,
 
@@ -17,17 +17,36 @@ const playerSchema = new Schema(
             // required: true
         },
 
-        playerName: {
-            type: String,
-            required: true
-
-        },
-
-        sports: {
+        hostelName: {
             type: String,
             unique: true,
             required: true
+
         },
+
+        hostelType: {
+            type: String,
+            enum: ['Girls', 'Boys'],
+            required: true
+
+        },
+
+        address: {
+            type: String,
+            required: true
+        },
+
+        intake: {
+            type: Number,
+            required: true
+
+        },
+
+        description: {
+            type: String,
+            required: true
+        },
+
         status: {
             type: Boolean,
             require: true
@@ -39,5 +58,5 @@ const playerSchema = new Schema(
 )
 
 
-export const Player = mongoose.model("Player", playerSchema)
+export const Hostel = mongoose.model("Hostel", hostelSchema)
 
